@@ -2,9 +2,20 @@ const express=require("express")
 const app=express()
 const database=require("./config/database")
 const UserRoute=require("./Route/UserRoute")
- database()
- app.use(express.json())
-app.use("/user",UserRoute)
+const SalleRoute=require("./Route/SalleRoute")
+const dotenv = require("dotenv")
 
-const port=3001
-app.listen(port,()=>{console.log(`seerver is runing at ${port}`);})
+dotenv.config()
+
+database()
+app.use(express.json())
+
+app.use("/user",UserRoute)
+app.use("/salle",SalleRoute)
+app.use("/reseration",require("./Route/ReservationRoute"))
+
+
+
+app.listen(process.env.port ,()=>{
+    console.log(`seerver is runing at ${process.env.port}`);
+})

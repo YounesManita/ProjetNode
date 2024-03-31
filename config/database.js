@@ -1,7 +1,7 @@
 const mongoose=require("mongoose")
 const database=async()=>{
     try {
-        await mongoose.connect("mongodb://localhost:27017/reservationSalle")
+        await mongoose.connect(process.env.db_uri)
 
         console.log( "Database connected successfully");
     } catch (error) {
