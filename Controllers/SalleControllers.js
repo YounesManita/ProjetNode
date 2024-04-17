@@ -21,7 +21,9 @@ exports.AddSalle=async(req,res)=>{
 exports.getSalle=async(req,res)=>{
     try{
         
-        const listeSalle = await Salle.find().populate("reservation")
+        const listeSalle = await Salle.find().populate({
+            path: 'reservation',
+            match: { archive: false }   })
         res.status(200).json(listeSalle)
         
     }catch(error){
@@ -71,7 +73,10 @@ exports.deleteSalle=async(req,res)=>{
 exports.getidSalle=async(req,res)=>{
     try {
         let id =req.params.id
-        const salleOne =await Salle.findById({_id:id}).populate("reservation")
+        const salleOne =await Salle.findById({_id:id}).populate({
+            path: 'reservation',
+            match: { archive: false } 
+        })
         res.status(200).json({respone:salleOne,message:"one salle avec succes"})
 
     } catch (error) {
