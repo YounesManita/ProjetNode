@@ -2,6 +2,7 @@ const Reservation = require("../Models/ReservationModels")
 const SalleModels=require("../Models/SalleModels")
 const User=require("../Models/UserModels")
 const moment =require("moment")
+const nodemailer=require("nodemailer")
 
 
 const transporter = nodemailer.createTransport({
@@ -87,7 +88,7 @@ await SalleModels.findByIdAndUpdate({_id:reservationId},{$pull:{reservation:rese
   }
   exports.updateReservation = async (req, res) => {
     try {
-        const { id } = req.params; 
+        const { id } = req.params;
         const { date_debut, date_fin, heure_debut, heure_fin } = req.body;
 
         const formattedDebut = moment(date_debut).format("YYYY-MM-DD");
@@ -105,18 +106,28 @@ await SalleModels.findByIdAndUpdate({_id:reservationId},{$pull:{reservation:rese
             return res.status(402).json("L'heure de fin doit être après l'heure de début");
         }
 
-        const reservationExisteDebut = await Reservation.countDocuments({
-      
-            heure_debut: { $gte: formattedHeureDebut, $lte: formattedHeureFin },
+        
+        const reservationExiste = await Reservation.countDocuments({
+            _id: { $ne: id }, 
+            $or: [
+                {
+                    date_debut: formattedDebut,
+                    heure_debut: { $lt: formattedHeureFin, $gte: formattedHeureDebut }
+                },
+                {
+                    date_fin: formattedFin,
+                    heure_fin: { $lte: formattedHeureFin, $gt: formattedHeureDebut }
+                },
+                {
+                    date_debut: { $lt: formattedFin },
+                    date_fin: { $gt: formattedDebut }
+                }
+            ]
         }) > 0;
-        const reservationExisteFin = await Reservation.countDocuments({
-            date_fin: formattedFin,
-            heure_fin: { $gte: formattedHeureDebut, $lte: formattedHeureFin },
-        }) > 0;
-        if (reservationExisteDebut || reservationExisteFin) {
+
+        if (reservationExiste) {
             return res.status(401).json("Une réservation existe déjà pour ces heures.");
         } else {
-          
             await Reservation.findByIdAndUpdate(id, {
                 date_debut: formattedDebut,
                 date_fin: formattedFin,
@@ -130,6 +141,7 @@ await SalleModels.findByIdAndUpdate({_id:reservationId},{$pull:{reservation:rese
         return res.status(400).json(error);
     }
 }
+
 exports.annullerreservation=async(req,res)=>{
     try {
 

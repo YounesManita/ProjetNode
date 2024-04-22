@@ -6,7 +6,7 @@ const validatelogin = function (req,res,next){
     const authHeader = req.headers['authorization'];
     if(!authHeader) return res.status(401).send('Access Denied');
     try {
-    jwt.verify(authHeader, process.env.secretOrkey,(err,user)=>{
+    jwt.verify(authHeader, process.env.scretorkey,(err,user)=>{
 if(err) return res.sendStatus(403)
 req.user = user;
         next();
@@ -29,4 +29,23 @@ const isAdmin=async(req,res,next)=>{
         console.log(error);
         res.status(401).json(error)
     }
+}
+const isuser=async(req,res,next)=>{
+    try {
+        const User=req.user
+        if(User.role=="user"){
+            next()
+        }else{
+            res.status(501).json("vous n'ete pas authorize to acceder a cete function" )
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(401).json(error)
+    }
+}
+
+module.exports={
+    isAdmin:isAdmin,
+    validatelogin:validatelogin,
+    isuser:isuser
 }

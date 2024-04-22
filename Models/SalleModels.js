@@ -8,7 +8,7 @@ nom:{
 disponibilté:{
     type:Boolean,
     required:true,
-    default:false
+    default:true
 },
 capacité:{
     type:Number
@@ -16,7 +16,9 @@ capacité:{
 equipement:{
     type:String
 },
-description:{type:String},
+description:{
+    type:String
+},
 reservation:[{
     type:mongoose.Schema.Types.ObjectId,
     ref:"Reservation"

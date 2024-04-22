@@ -34,7 +34,7 @@ exports.signup = async (req, res) => {
                 nom:req.body.nom,
             prenom: req.body.prenom,
             email: existeuser,
-                Role: "user",
+                role: "user",
                 password: hashed,
                 Numerotelephone:req.body.Numerotelephone
                 
@@ -60,16 +60,16 @@ exports.login = async (req, res) => {
         const existemail = (req.body.email.toLowerCase()).trim()
 
         const existeuser = await User.findOne({ email: existemail});
-
+            console.log(existeuser);
         if (!existeuser) {
-            return res.status(401).json("Check your email .");
+            return res.status(401).json("Check your email");
         }
 
         const providedPassword = req.body.password;
         const passwordValid = await bcrypt.compare(providedPassword, existeuser.password);
 
         if (!passwordValid) {
-            return res.status(401).json("Check your  password.");
+            return res.status(401).json("Check your  password");
         } 
         else if (existeuser.confirmed==false){
             const response = Math.floor(Math.random() * (9999 - 1000) + 1000)
@@ -109,11 +109,11 @@ exports.login = async (req, res) => {
         };
 
             const token =  jwt.sign(payload, process.env.scretorkey);
-
+                console.log(token);
 
         
 
-      return  res.status(200).json({ resultat: existeuser, token: token, message: "Sign in successful." });
+      return  res.status(200).json({ resultat: existeuser, token: token, message: "Sign in successful" });
         }
     } catch (error) {
         console.error(error);
@@ -199,7 +199,7 @@ exports.forgotpassword = async (req,res) =>{
 
 exports.passwordReset = async (req, res) => {
     try {
-        const newCode = req.body.code;
+        const newCode = req.params.code;
         let password = req.body.password;
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);

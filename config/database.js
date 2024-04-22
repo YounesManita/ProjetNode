@@ -26,7 +26,7 @@ const connectDB = async () => {
         const email =("younesmanita975@gmail.com".toLocaleLowerCase()).trim()
 
         let webmaster = await User.findOne({
-            Role: 'admin',
+            role: 'admin',
         });
 
         if (!webmaster) {
@@ -41,9 +41,9 @@ const connectDB = async () => {
 
                 email: 'younesmanita975@gmail.com',
                 Numerotelephone:"96289993",
-            
+                confirmed:true,
                 password: hashed,
-                Role: 'admin',
+                role: 'admin',
             });
             await new_user.save();
             console.log(`webmaster account has been added : ${new_user.email}`);
