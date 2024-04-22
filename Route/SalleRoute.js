@@ -6,7 +6,7 @@ const { validatelogin, isAdmin } = require("../Midalwares/JwtValidate")
 router.post("/ajouter",validatelogin,isAdmin,SalleControllers.AddSalle)
 router.get("/get",SalleControllers.getSalle)
 router.put("/modifier/:id",validatelogin,isAdmin,SalleControllers.updateSalle)
-router.delete("/supprimer/:id",validatelogin,isAdmin,SalleControllers.deleteSalle)
+router.delete("/supprimer/:id",validatelogin,SalleControllers.deleteSalle)
 router.get("/getid/:id",validatelogin,SalleControllers.getidSalle)
 
 
